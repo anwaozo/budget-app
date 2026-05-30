@@ -1,94 +1,159 @@
-import { Category, Transaction, BudgetAllocation, SavingsGoal } from '@/types';
+import { BudgetContext, UserProfile, Category, Transaction, BudgetAllocation, SavingsGoal } from '@/types';
 
-export const DEFAULT_CATEGORIES: Category[] = [
-  { id: 'housing',       name: 'Housing & Rent',      defaultType: 'need',   icon: '🏠', isSystem: true },
-  { id: 'childcare',     name: 'Childcare',            defaultType: 'need',   icon: '👶', isSystem: true },
-  { id: 'groceries',     name: 'Groceries',            defaultType: 'need',   icon: '🛒', isSystem: true },
-  { id: 'utilities',     name: 'Utilities',            defaultType: 'need',   icon: '💡', isSystem: true },
-  { id: 'transport',     name: 'Transportation',       defaultType: 'need',   icon: '🚗', isSystem: true },
-  { id: 'health',        name: 'Health & Insurance',   defaultType: 'need',   icon: '🏥', isSystem: true },
-  { id: 'baby',          name: 'Baby Supplies',        defaultType: 'need',   icon: '🍼', isSystem: true },
-  { id: 'dining',        name: 'Dining Out',           defaultType: 'want',   icon: '🍽', isSystem: true },
-  { id: 'entertainment', name: 'Entertainment',        defaultType: 'want',   icon: '🎬', isSystem: true },
-  { id: 'subscriptions', name: 'Subscriptions',        defaultType: 'want',   icon: '📱', isSystem: true },
-  { id: 'shopping',      name: 'Shopping',             defaultType: 'want',   icon: '🛍', isSystem: true },
-  { id: 'personal',      name: 'Personal Care',        defaultType: 'want',   icon: '✂️', isSystem: true },
-  { id: 'income',        name: 'Income',               defaultType: 'income', icon: '💰', isSystem: true },
-  { id: 'savings',       name: 'Savings',              defaultType: 'need',   icon: '🏦', isSystem: true },
-  { id: 'other',         name: 'Other',                defaultType: 'need',   icon: '📦', isSystem: false },
+// ── Users ────────────────────────────────────────────────────
+export const SEED_USERS: UserProfile[] = [
+  {
+    id: 'user-adam',
+    name: 'Adam Nwaozo',
+    email: 'adam@apperr.com',
+    pin: '1234',
+    avatarInitials: 'AN',
+    theme: 'dark',
+    activeContextId: 'ctx-joint',
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'user-wife',
+    name: 'Wife',
+    email: 'wife@nwaozo.com',
+    pin: '5678',
+    avatarInitials: 'W',
+    theme: 'light',
+    activeContextId: 'ctx-joint',
+    createdAt: '2026-01-01T00:00:00Z',
+  },
 ];
 
+// ── Contexts ─────────────────────────────────────────────────
+export const SEED_CONTEXTS: BudgetContext[] = [
+  {
+    id: 'ctx-adam-personal',
+    type: 'personal',
+    name: 'Adam — Personal',
+    ownerId: 'user-adam',
+    memberIds: ['user-adam'],
+    color: '#0EA5A0',
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'ctx-wife-personal',
+    type: 'personal',
+    name: 'Wife — Personal',
+    ownerId: 'user-wife',
+    memberIds: ['user-wife'],
+    color: '#0EA5A0',
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'ctx-joint',
+    type: 'joint',
+    name: 'Nwaozo Joint',
+    ownerId: 'user-adam',
+    memberIds: ['user-adam', 'user-wife'],
+    color: '#22C55E',
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'ctx-apperr',
+    type: 'business',
+    name: 'Apperr LLC',
+    ownerId: 'user-adam',
+    memberIds: ['user-adam'],
+    color: '#8B5CF6',
+    businessType: 'LLC',
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+];
+
+// ── Global categories (available in all contexts) ─────────────
+export const GLOBAL_CATEGORIES: Category[] = [
+  { id:'cat-housing',      contextId:'global', name:'Housing & Rent',   defaultType:'need',   icon:'🏠', isSystem:true, sortOrder:1,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-childcare',    contextId:'global', name:'Childcare',        defaultType:'need',   icon:'👶', isSystem:true, sortOrder:2,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-groceries',    contextId:'global', name:'Groceries',        defaultType:'need',   icon:'🛒', isSystem:true, sortOrder:3,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-utilities',    contextId:'global', name:'Utilities',        defaultType:'need',   icon:'💡', isSystem:true, sortOrder:4,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-transport',    contextId:'global', name:'Transportation',   defaultType:'need',   icon:'🚗', isSystem:true, sortOrder:5,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-health',       contextId:'global', name:'Health',           defaultType:'need',   icon:'🏥', isSystem:true, sortOrder:6,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-baby',         contextId:'global', name:'Baby Supplies',    defaultType:'need',   icon:'🍼', isSystem:true, sortOrder:7,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-dining',       contextId:'global', name:'Dining Out',       defaultType:'want',   icon:'🍽', isSystem:true, sortOrder:8,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-entertainment',contextId:'global', name:'Entertainment',    defaultType:'want',   icon:'🎬', isSystem:true, sortOrder:9,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-subscriptions',contextId:'global', name:'Subscriptions',    defaultType:'want',   icon:'📱', isSystem:true, sortOrder:10, createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-shopping',     contextId:'global', name:'Shopping',         defaultType:'want',   icon:'🛍', isSystem:true, sortOrder:11, createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-personal',     contextId:'global', name:'Personal Care',    defaultType:'want',   icon:'✂️', isSystem:true, sortOrder:12, createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-income',       contextId:'global', name:'Income',           defaultType:'income', icon:'💰', isSystem:true, sortOrder:13, createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-savings',      contextId:'global', name:'Savings',          defaultType:'need',   icon:'🏦', isSystem:true, sortOrder:14, createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-other',        contextId:'global', name:'Other',            defaultType:'need',   icon:'📦', isSystem:false, sortOrder:99, createdAt:'2026-01-01T00:00:00Z' },
+];
+
+// ── Context-specific categories ───────────────────────────────
+export const CONTEXT_CATEGORIES: Category[] = [
+  { id:'cat-date-nights',  contextId:'ctx-joint',        name:'Date Nights',      defaultType:'want', icon:'❤️', isSystem:false, sortOrder:20, createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-contractor',   contextId:'ctx-apperr',       name:'Contractors',      defaultType:'need', icon:'👨‍💻', isSystem:false, sortOrder:1,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-saas',         contextId:'ctx-apperr',       name:'SaaS Tools',       defaultType:'need', icon:'⚙️', isSystem:false, sortOrder:2,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-marketing',    contextId:'ctx-apperr',       name:'Marketing',        defaultType:'need', icon:'📢', isSystem:false, sortOrder:3,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-client-rev',   contextId:'ctx-apperr',       name:'Client Revenue',   defaultType:'income',icon:'💼',isSystem:false, sortOrder:4,  createdAt:'2026-01-01T00:00:00Z' },
+  { id:'cat-gym',          contextId:'ctx-adam-personal',name:'Gym & Fitness',    defaultType:'want', icon:'💪', isSystem:false, sortOrder:1,  createdAt:'2026-01-01T00:00:00Z' },
+];
+
+export const ALL_CATEGORIES = [...GLOBAL_CATEGORIES, ...CONTEXT_CATEGORIES];
+
+// ── Transactions ──────────────────────────────────────────────
 export const SEED_TRANSACTIONS: Transaction[] = [
-  { id:'t1',  date:'2026-05-28', payee:'HEB Grocery',         amount:-142.30,  categoryId:'groceries',     type:'need',   note:'Weekly shop',     importSource:'manual', createdAt:'2026-05-28T10:00:00Z' },
-  { id:'t2',  date:'2026-05-27', payee:'Apperr — Paycheck',   amount:4200.00,  categoryId:'income',        type:'income', note:'Bi-weekly',       importSource:'manual', createdAt:'2026-05-27T09:00:00Z' },
-  { id:'t3',  date:'2026-05-26', payee:'Shell Gas Station',   amount:-67.20,   categoryId:'transport',     type:'need',   note:'',                importSource:'manual', createdAt:'2026-05-26T08:30:00Z' },
-  { id:'t4',  date:'2026-05-25', payee:'Spotify Premium',     amount:-16.00,   categoryId:'subscriptions', type:'want',   note:'',                importSource:'manual', createdAt:'2026-05-25T00:00:00Z' },
-  { id:'t5',  date:'2026-05-24', payee:'Sunrise Daycare',     amount:-850.00,  categoryId:'childcare',     type:'need',   note:'June invoice',    importSource:'manual', createdAt:'2026-05-24T08:00:00Z' },
-  { id:'t6',  date:'2026-05-23', payee:'Netflix',             amount:-18.00,   categoryId:'subscriptions', type:'want',   note:'',                importSource:'manual', createdAt:'2026-05-23T00:00:00Z' },
-  { id:'t7',  date:'2026-05-22', payee:'Amazon Prime',        amount:-43.99,   categoryId:'shopping',      type:'want',   note:'Baby items',      importSource:'manual', createdAt:'2026-05-22T14:00:00Z' },
-  { id:'t8',  date:'2026-05-21', payee:'HOA Monthly Fee',     amount:-210.00,  categoryId:'housing',       type:'need',   note:'Auto-pay',        importSource:'manual', createdAt:'2026-05-21T00:00:00Z' },
-  { id:'t9',  date:'2026-05-20', payee:'CVS Pharmacy',        amount:-38.50,   categoryId:'health',        type:'need',   note:'',                importSource:'manual', createdAt:'2026-05-20T11:00:00Z' },
-  { id:'t10', date:'2026-05-19', payee:"Chick-fil-A",         amount:-24.80,   categoryId:'dining',        type:'want',   note:'',                importSource:'manual', createdAt:'2026-05-19T12:30:00Z' },
-  { id:'t11', date:'2026-05-18', payee:'CenterPoint Energy',  amount:-89.40,   categoryId:'utilities',     type:'need',   note:'',                importSource:'manual', createdAt:'2026-05-18T00:00:00Z' },
-  { id:'t12', date:'2026-05-17', payee:'Target',              amount:-112.30,  categoryId:'shopping',      type:'want',   note:'Household',       importSource:'manual', createdAt:'2026-05-17T15:00:00Z' },
-  { id:'t13', date:'2026-05-16', payee:'GHBCC Consulting',    amount:1200.00,  categoryId:'income',        type:'income', note:'IT services',     importSource:'manual', createdAt:'2026-05-16T09:00:00Z' },
-  { id:'t14', date:'2026-05-15', payee:'Starbucks',           amount:-18.60,   categoryId:'dining',        type:'want',   note:'',                importSource:'manual', createdAt:'2026-05-15T08:00:00Z' },
-  { id:'t15', date:'2026-05-14', payee:'Apperr — Paycheck',   amount:3000.00,  categoryId:'income',        type:'income', note:'Bi-weekly',       importSource:'manual', createdAt:'2026-05-14T09:00:00Z' },
-  { id:'t16', date:'2026-05-13', payee:'Pampers Diapers',     amount:-47.99,   categoryId:'baby',          type:'need',   note:'',                importSource:'manual', createdAt:'2026-05-13T10:00:00Z' },
-  { id:'t17', date:'2026-05-10', payee:'Geico Insurance',     amount:-142.00,  categoryId:'health',        type:'need',   note:'Auto insurance',  importSource:'manual', createdAt:'2026-05-10T00:00:00Z' },
-  { id:'t18', date:'2026-05-08', payee:'H-E-B Grocery',       amount:-138.70,  categoryId:'groceries',     type:'need',   note:'Weekly shop',     importSource:'manual', createdAt:'2026-05-08T10:00:00Z' },
-  { id:'t19', date:'2026-05-05', payee:'Regal Cinemas',       amount:-38.00,   categoryId:'entertainment', type:'want',   note:'Date night',      importSource:'manual', createdAt:'2026-05-05T19:00:00Z' },
-  { id:'t20', date:'2026-05-01', payee:'Mortgage — Chase',    amount:-1890.00, categoryId:'housing',       type:'need',   note:'May mortgage',    importSource:'manual', createdAt:'2026-05-01T00:00:00Z' },
+  // Joint
+  { id:'tx1',  contextId:'ctx-joint',         date:'2026-05-28', payee:'HEB Grocery',        amount:-142.30,  categoryId:'cat-groceries',    type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-28T10:00:00Z' },
+  { id:'tx2',  contextId:'ctx-joint',         date:'2026-05-27', payee:'Apperr — Paycheck',  amount:4200.00,  categoryId:'cat-income',       type:'income', createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-27T09:00:00Z' },
+  { id:'tx3',  contextId:'ctx-joint',         date:'2026-05-26', payee:'Shell Gas Station',  amount:-67.20,   categoryId:'cat-transport',    type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-26T08:30:00Z' },
+  { id:'tx4',  contextId:'ctx-joint',         date:'2026-05-25', payee:'Spotify Premium',    amount:-16.00,   categoryId:'cat-subscriptions',type:'want',   createdBy:'user-wife',  importSource:'manual', createdAt:'2026-05-25T00:00:00Z' },
+  { id:'tx5',  contextId:'ctx-joint',         date:'2026-05-24', payee:'Sunrise Daycare',    amount:-850.00,  categoryId:'cat-childcare',    type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-24T08:00:00Z' },
+  { id:'tx6',  contextId:'ctx-joint',         date:'2026-05-23', payee:'Netflix',            amount:-18.00,   categoryId:'cat-subscriptions',type:'want',   createdBy:'user-wife',  importSource:'manual', createdAt:'2026-05-23T00:00:00Z' },
+  { id:'tx7',  contextId:'ctx-joint',         date:'2026-05-22', payee:'Amazon Prime',       amount:-43.99,   categoryId:'cat-shopping',     type:'want',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-22T14:00:00Z' },
+  { id:'tx8',  contextId:'ctx-joint',         date:'2026-05-21', payee:'HOA Monthly Fee',    amount:-210.00,  categoryId:'cat-housing',      type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-21T00:00:00Z' },
+  { id:'tx9',  contextId:'ctx-joint',         date:'2026-05-20', payee:'Date Night — Nobu',  amount:-184.00,  categoryId:'cat-date-nights',  type:'want',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-20T19:00:00Z' },
+  { id:'tx10', contextId:'ctx-joint',         date:'2026-05-18', payee:'CenterPoint Energy', amount:-89.40,   categoryId:'cat-utilities',    type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-18T00:00:00Z' },
+  { id:'tx11', contextId:'ctx-joint',         date:'2026-05-15', payee:'Apperr — Paycheck',  amount:3000.00,  categoryId:'cat-income',       type:'income', createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-15T09:00:00Z' },
+  { id:'tx12', contextId:'ctx-joint',         date:'2026-05-14', payee:'Pampers Diapers',    amount:-47.99,   categoryId:'cat-baby',         type:'need',   createdBy:'user-wife',  importSource:'manual', createdAt:'2026-05-14T10:00:00Z' },
+  { id:'tx13', contextId:'ctx-joint',         date:'2026-05-10', payee:'Geico Insurance',    amount:-142.00,  categoryId:'cat-health',       type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-10T00:00:00Z' },
+  { id:'tx14', contextId:'ctx-joint',         date:'2026-05-08', payee:'HEB Grocery',        amount:-138.70,  categoryId:'cat-groceries',    type:'need',   createdBy:'user-wife',  importSource:'manual', createdAt:'2026-05-08T10:00:00Z' },
+  { id:'tx15', contextId:'ctx-joint',         date:'2026-05-01', payee:'Mortgage — Chase',   amount:-1890.00, categoryId:'cat-housing',      type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-01T00:00:00Z' },
+  { id:'tx16', contextId:'ctx-joint',         date:'2026-05-16', payee:'GHBCC Consulting',   amount:1200.00,  categoryId:'cat-income',       type:'income', createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-16T09:00:00Z' },
+  // Adam personal
+  { id:'tx17', contextId:'ctx-adam-personal', date:'2026-05-20', payee:'Planet Fitness',     amount:-25.00,   categoryId:'cat-gym',          type:'want',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-20T06:00:00Z' },
+  { id:'tx18', contextId:'ctx-adam-personal', date:'2026-05-15', payee:'Trading Commission', amount:-12.50,   categoryId:'cat-other',        type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-15T10:00:00Z' },
+  // Apperr business
+  { id:'tx19', contextId:'ctx-apperr',        date:'2026-05-25', payee:'Client — Prive Parking', amount:3500.00,  categoryId:'cat-client-rev',  type:'income', createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-25T09:00:00Z' },
+  { id:'tx20', contextId:'ctx-apperr',        date:'2026-05-24', payee:'Contractor — Dev 1',     amount:-900.00,  categoryId:'cat-contractor',  type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-24T10:00:00Z' },
+  { id:'tx21', contextId:'ctx-apperr',        date:'2026-05-20', payee:'AWS Hosting',             amount:-142.00,  categoryId:'cat-saas',        type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-20T00:00:00Z' },
+  { id:'tx22', contextId:'ctx-apperr',        date:'2026-05-16', payee:'GHBCC IT Services',       amount:1200.00,  categoryId:'cat-client-rev',  type:'income', createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-16T09:00:00Z' },
+  { id:'tx23', contextId:'ctx-apperr',        date:'2026-05-10', payee:'Figma Pro',               amount:-45.00,   categoryId:'cat-saas',        type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-10T00:00:00Z' },
+  { id:'tx24', contextId:'ctx-apperr',        date:'2026-05-05', payee:'Meta Ads',                amount:-380.00,  categoryId:'cat-marketing',   type:'need',   createdBy:'user-adam',  importSource:'manual', createdAt:'2026-05-05T00:00:00Z' },
 ];
 
+// ── Budget allocations ────────────────────────────────────────
 export const SEED_BUDGET: BudgetAllocation[] = [
-  { id:'b1',  month:'2026-05', categoryId:'housing',       allocated:2100,  rollover:0 },
-  { id:'b2',  month:'2026-05', categoryId:'childcare',     allocated:1200,  rollover:0 },
-  { id:'b3',  month:'2026-05', categoryId:'groceries',     allocated:600,   rollover:0 },
-  { id:'b4',  month:'2026-05', categoryId:'utilities',     allocated:280,   rollover:0 },
-  { id:'b5',  month:'2026-05', categoryId:'transport',     allocated:400,   rollover:0 },
-  { id:'b6',  month:'2026-05', categoryId:'health',        allocated:350,   rollover:0 },
-  { id:'b7',  month:'2026-05', categoryId:'baby',          allocated:200,   rollover:0 },
-  { id:'b8',  month:'2026-05', categoryId:'dining',        allocated:300,   rollover:0 },
-  { id:'b9',  month:'2026-05', categoryId:'entertainment', allocated:150,   rollover:0 },
-  { id:'b10', month:'2026-05', categoryId:'subscriptions', allocated:80,    rollover:0 },
-  { id:'b11', month:'2026-05', categoryId:'shopping',      allocated:180,   rollover:0 },
-  { id:'b12', month:'2026-05', categoryId:'personal',      allocated:120,   rollover:0 },
-  { id:'b13', month:'2026-05', categoryId:'savings',       allocated:930,   rollover:0 },
+  // Joint
+  { id:'ba1',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-housing',       allocated:2100, rollover:0 },
+  { id:'ba2',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-childcare',     allocated:1200, rollover:0 },
+  { id:'ba3',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-groceries',     allocated:600,  rollover:0 },
+  { id:'ba4',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-utilities',     allocated:280,  rollover:0 },
+  { id:'ba5',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-transport',     allocated:400,  rollover:0 },
+  { id:'ba6',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-health',        allocated:350,  rollover:0 },
+  { id:'ba7',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-baby',          allocated:200,  rollover:0 },
+  { id:'ba8',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-dining',        allocated:300,  rollover:0 },
+  { id:'ba9',  contextId:'ctx-joint', month:'2026-05', categoryId:'cat-entertainment', allocated:150,  rollover:0 },
+  { id:'ba10', contextId:'ctx-joint', month:'2026-05', categoryId:'cat-subscriptions', allocated:80,   rollover:0 },
+  { id:'ba11', contextId:'ctx-joint', month:'2026-05', categoryId:'cat-shopping',      allocated:180,  rollover:0 },
+  { id:'ba12', contextId:'ctx-joint', month:'2026-05', categoryId:'cat-date-nights',   allocated:200,  rollover:0 },
+  { id:'ba13', contextId:'ctx-joint', month:'2026-05', categoryId:'cat-savings',       allocated:950,  rollover:0 },
+  // Apperr
+  { id:'ba14', contextId:'ctx-apperr', month:'2026-05', categoryId:'cat-contractor', allocated:2000, rollover:0 },
+  { id:'ba15', contextId:'ctx-apperr', month:'2026-05', categoryId:'cat-saas',       allocated:300,  rollover:0 },
+  { id:'ba16', contextId:'ctx-apperr', month:'2026-05', categoryId:'cat-marketing',  allocated:500,  rollover:0 },
 ];
 
+// ── Goals ─────────────────────────────────────────────────────
 export const SEED_GOALS: SavingsGoal[] = [
-  {
-    id:'g1', name:'Emergency Fund', targetAmount:15000, currentAmount:10800,
-    targetDate:'2026-08-01', monthlyContribution:500,
-    note:'3–6 months of expenses', color:'#22C55E',
-    contributions:[
-      {id:'gc1',date:'2026-05-01',amount:500},
-      {id:'gc2',date:'2026-04-01',amount:500},
-    ],
-  },
-  {
-    id:'g2', name:'Baby College Fund', targetAmount:50000, currentAmount:9000,
-    targetDate:'2030-01-01', monthlyContribution:400,
-    note:'529 Plan — start early', color:'#0EA5A0',
-    contributions:[
-      {id:'gc3',date:'2026-05-01',amount:400},
-    ],
-  },
-  {
-    id:'g3', name:'Vacation 2026', targetAmount:4500, currentAmount:2025,
-    targetDate:'2026-11-01', monthlyContribution:350,
-    note:'Family trip — Cancun', color:'#F59E0B',
-    contributions:[
-      {id:'gc4',date:'2026-05-01',amount:350},
-    ],
-  },
-  {
-    id:'g4', name:'New Vehicle Fund', targetAmount:8000, currentAmount:2000,
-    targetDate:'2028-03-01', monthlyContribution:200,
-    note:'Replace the Palisade', color:'#EF4444',
-    contributions:[
-      {id:'gc5',date:'2026-05-01',amount:200},
-    ],
-  },
+  { id:'g1', contextId:'ctx-joint',         name:'Emergency Fund',   targetAmount:15000, currentAmount:10800, targetDate:'2026-08-01', monthlyContribution:500, note:'3–6 months expenses', color:'#22C55E', contributions:[{id:'gc1',goalId:'g1',contributedBy:'user-adam',date:'2026-05-01',amount:500}] },
+  { id:'g2', contextId:'ctx-joint',         name:'Baby College Fund',targetAmount:50000, currentAmount:9000,  targetDate:'2030-01-01', monthlyContribution:400, note:'529 Plan',             color:'#0EA5A0', contributions:[{id:'gc2',goalId:'g2',contributedBy:'user-adam',date:'2026-05-01',amount:400}] },
+  { id:'g3', contextId:'ctx-joint',         name:'Vacation 2026',    targetAmount:4500,  currentAmount:2025,  targetDate:'2026-11-01', monthlyContribution:350, note:'Cancun trip',          color:'#F59E0B', contributions:[{id:'gc3',goalId:'g3',contributedBy:'user-wife',date:'2026-05-01',amount:350}] },
+  { id:'g4', contextId:'ctx-adam-personal', name:'Gym Equipment',    targetAmount:1200,  currentAmount:480,   targetDate:'2026-08-01', monthlyContribution:200, note:'Home gym setup',       color:'#8B5CF6', contributions:[{id:'gc4',goalId:'g4',contributedBy:'user-adam',date:'2026-05-01',amount:200}] },
+  { id:'g5', contextId:'ctx-apperr',        name:'MacBook Pro',      targetAmount:3500,  currentAmount:1400,  targetDate:'2026-09-01', monthlyContribution:350, note:'Dev workstation',      color:'#8B5CF6', contributions:[{id:'gc5',goalId:'g5',contributedBy:'user-adam',date:'2026-05-01',amount:350}] },
 ];

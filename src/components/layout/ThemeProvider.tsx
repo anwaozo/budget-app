@@ -3,15 +3,12 @@ import { useEffect } from 'react';
 import { useStore } from '@/store';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const theme = useStore(s => s.theme);
+  const { users, activeUserId } = useStore();
+  const theme = users.find(u => u.id === activeUserId)?.theme ?? 'dark';
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    root.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
   return <>{children}</>;

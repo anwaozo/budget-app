@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Transaction, MonthSummary } from '@/types';
+import { Transaction, MonthSummary, ContextType } from '@/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,9 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(amount: number, showSign = false): string {
   const abs = Math.abs(amount);
   const formatted = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
+    style: 'currency', currency: 'USD', minimumFractionDigits: 2,
   }).format(abs);
   if (showSign && amount > 0) return `+${formatted}`;
   if (amount < 0) return `-${formatted}`;
@@ -37,47 +35,35 @@ export function addMonths(date: Date, months: number): Date {
   return result;
 }
 
-export function computeMonthSummary(
-  transactions: Transaction[],
-  monthKey: string,
-): MonthSummary {
-  const monthly = transactions.filter(t => t.date.startsWith(monthKey));
+export function computeMonthSummary(transactions: Transaction[], monthKey: string, contextId?: string): MonthSummary {
+  let monthly = transactions.filter(t => t.date.startsWith(monthKey));
+  if (contextId) monthly = monthly.filter(t => t.contextId === contextId);
 
-  const totalIncome = monthly
-    .filter(t => t.type === 'income')
-    .reduce((sum, t) => sum + t.amount, 0);
-
+  const totalIncome = monthly.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
   const expenses = monthly.filter(t => t.type !== 'income' && t.type !== 'transfer');
-  const totalExpenses = expenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
-
-  const totalWants = expenses
-    .filter(t => t.type === 'want')
-    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-
-  const totalNeeds = expenses
-    .filter(t => t.type === 'need')
-    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-
-  const savingsRate = totalIncome > 0
-    ? ((totalIncome - totalExpenses) / totalIncome) * 100
-    : 0;
-
+  const totalExpenses = expenses.reduce((s, t) => s + Math.abs(t.amount), 0);
+  const totalWants = expenses.filter(t => t.type === 'want').reduce((s, t) => s + Math.abs(t.amount), 0);
+  const totalNeeds = expenses.filter(t => t.type === 'need').reduce((s, t) => s + Math.abs(t.amount), 0);
+  const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome) * 100 : 0;
   const wantsPct = totalExpenses > 0 ? (totalWants / totalExpenses) * 100 : 0;
   const needsPct = totalExpenses > 0 ? (totalNeeds / totalExpenses) * 100 : 0;
 
-  return { month: monthKey, totalIncome, totalExpenses, totalWants, totalNeeds, savingsRate, wantsPct, needsPct };
+  return { month: monthKey, totalIncome, totalExpenses, totalWants, totalNeeds, savingsRate, wantsPct, needsPct, netProfit: totalIncome - totalExpenses };
 }
 
-export function projectGoalCompletion(
-  currentAmount: number,
-  targetAmount: number,
-  monthlyContribution: number,
-): Date | null {
-  if (monthlyContribution <= 0) return null;
-  const monthsNeeded = Math.ceil((targetAmount - currentAmount) / monthlyContribution);
-  return addMonths(new Date(), monthsNeeded);
+export function projectGoalCompletion(current: number, target: number, monthly: number): Date | null {
+  if (monthly <= 0 || current >= target) return null;
+  return addMonths(new Date(), Math.ceil((target - current) / monthly));
 }
 
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+export function contextColor(type: ContextType): string {
+  return type === 'personal' ? '#0EA5A0' : type === 'joint' ? '#22C55E' : '#8B5CF6';
+}
+
+export function contextLabel(type: ContextType): string {
+  return type === 'personal' ? 'Personal' : type === 'joint' ? 'Joint' : 'Business';
 }
