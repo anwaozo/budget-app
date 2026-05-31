@@ -98,3 +98,62 @@ export interface MonthSummary {
   needsPct: number;
   netProfit?: number;      // business contexts
 }
+
+// ── Debt Snowball ─────────────────────────────────────────────
+export type DebtType = 'credit_card' | 'auto' | 'student' | 'personal' | 'medical' | 'other';
+
+export interface DebtPayment {
+  id: string;
+  debtId: string;
+  date: string;
+  amount: number;
+  principal: number;
+  interest: number;
+  balanceAfter: number;
+  isSnowflake: boolean;
+  createdBy: string;
+}
+
+export interface Debt {
+  id: string;
+  contextId: string;
+  name: string;
+  type: DebtType;
+  currentBalance: number;
+  originalBalance: number;
+  apr: number;           // decimal e.g. 0.2490
+  minimumPayment: number;
+  dueDate: number;       // day of month 1-31
+  startDate: string;
+  paidOffDate?: string;
+  isActive: boolean;
+  payments: DebtPayment[];
+  note?: string;
+}
+
+// ── Snowball projection (computed, not persisted) ─────────────
+export interface MonthlyBreakdown {
+  month: number;
+  payment: number;
+  principal: number;
+  interest: number;
+  balance: number;
+}
+
+export interface DebtSchedule {
+  debtId: string;
+  payoffMonth: number;
+  payoffDate: string;
+  totalInterestPaid: number;
+  monthlyBreakdown: MonthlyBreakdown[];
+}
+
+export interface SnowballProjection {
+  strategy: 'snowball' | 'avalanche';
+  extraMonthlyPayment: number;
+  debtFreeDate: string;
+  totalInterestPaid: number;
+  totalMonthsToPayoff: number;
+  debtSchedules: DebtSchedule[];
+  reachable: boolean;
+}
