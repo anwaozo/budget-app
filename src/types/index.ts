@@ -157,3 +157,25 @@ export interface SnowballProjection {
   debtSchedules: DebtSchedule[];
   reachable: boolean;
 }
+
+// ── Bank Statement (statement import tracking) ────────────────
+export interface BankStatement {
+  id: string;
+  contextId: string;
+  accountName: string;
+  accountNumberLast4: string;
+  institution: string;
+  statementStart: string;
+  statementEnd: string;
+  openingBalance: number;
+  closingBalance: number;
+  totalDeposits: number;
+  totalWithdrawals: number;
+  importedAt: string;
+  importedBy: string;
+  transactionIds: string[];
+}
+
+export type TransferType =
+  | 'payroll' | 'zelle_in' | 'zelle_out' | 'self_transfer'
+  | 'brokerage' | 'ach_debit' | 'debit_card' | 'atm' | 'interest';
