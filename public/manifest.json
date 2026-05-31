@@ -1,0 +1,20 @@
+{
+  "name": "Home Budget OS",
+  "short_name": "Budget OS",
+  "description": "Personal, Joint, and Business budgeting",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0F1B2D",
+  "theme_color": "#0EA5A0",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["finance", "productivity"],
+  "shortcuts": [
+    { "name": "Dashboard",      "url": "/dashboard",     "description": "View your budget overview" },
+    { "name": "Add Expense",    "url": "/ledger",        "description": "Log a new transaction" },
+    { "name": "Debt Snowball",  "url": "/debt-snowball", "description": "Track debt payoff" }
+  ]
+}
